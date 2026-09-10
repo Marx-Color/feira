@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feira de Empreendedorismo Rural de Cajuru | EE Dr. Messias da Fonseca</title>
+    
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        agro: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16',
+                        },
+                        amber: {
+                            450: '#f59e0b',
+                            550: '#d97706'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- QRCode.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <!-- Canvas Confetti for Celebration Effects -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Custom animations & print layout */
+        @keyframes pulseSlow {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.35; transform: scale(1.08); }
+        }
+        .animate-pulse-slow {
+            animation: pulseSlow 8s ease-in-out infinite;
+        }
+
+        /* Certificate Print Layout rules */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #printableCertificateArea, #printableCertificateArea * {
+                visibility: visible;
+            }
+            #printableCertificateArea {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100vw;
+                height: 100vh;
+                margin: 0;
+                padding: 20mm;
+                background: white !important;
+                color: black !important;
+                z-index: 99999;
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans antialiased selection:bg-agro-600 selection:text-white flex flex-col min-h-screen">
+
+    <!-- Toast Notification Banner -->
+    <div id="toastNotification" class="fixed top-5 right-5 z-50 transform translate-y-[-150%] opacity-0 transition-all duration-300 pointer-events-none bg-stone-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-stone-700 max-w-sm">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-semibold">Notificação</span>
+    </div>
+
+    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-stone-200/80 shadow-sm transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- School & Event Brand -->
+                <a href="#" class="flex items-center gap-3.5 group">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-agro-700 to-agro-900 flex items-center justify-center text-white shadow-lg shadow-agro-700/25 group-hover:scale-105 transition-transform">
+                        <i class="fa-solid fa-seedling text-2xl text-amber-300"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs uppercase font-extrabold tracking-wider text-agro-700 bg-agro-50 px-2.5 py-0.5 rounded-md border border-agro-200/60">Cajuru &bull; SP</span>
+                            <span class="text-[10px] font-semibold text-stone-600 bg-stone-100 px-2 py-0.5 rounded-md">EE Dr. Messias da Fonseca</span>
+                        </div>
+                        <h1 class="text-base sm:text-lg font-black tracking-tight text-stone-900 leading-tight mt-0.5">
+                            Feira de Empreendedorismo Rural
+                        </h1>
+                    </div>
+                </a>
+
+                <!-- Desktop Navigation Menu -->
+                <nav class="hidden lg:flex items-center gap-7 text-xs font-bold uppercase tracking-wider text-stone-600">
+                    <a href="#sobre" class="hover:text-agro-700 transition-colors">Sobre</a>
+                    <a href="#programacao" class="hover:text-agro-700 transition-colors">Programação</a>
+                    <a href="#expositores" class="hover:text-agro-700 transition-colors">Expositores</a>
+                    <a href="#local" class="hover:text-agro-700 transition-colors">Local</a>
+                    <a href="#faq" class="hover:text-agro-700 transition-colors">FAQ</a>
+                </nav>
+
+                <!-- Desktop CTA & Restricted Organizer Access Button -->
+                <div class="hidden md:flex items-center gap-3">
+                    <button type="button" onclick="openOrganizerLoginModal()" class="inline-flex items-center gap-2 text-xs font-bold text-stone-600 hover:text-agro-800 bg-stone-100 hover:bg-stone-200/80 px-3.5 py-2.5 rounded-xl transition-all border border-stone-200" title="Área Restrita aos Organizadores e Secretaria">
+                        <i class="fa-solid fa-lock text-stone-400"></i>
+                        <span>Acesso Organizador</span>
+                    </button>
+                    <a href="#inscricao" class="inline-flex items-center gap-2 bg-agro-700 hover:bg-agro-800 text-white text-xs font-bold uppercase tracking-wider px-5 py-2.5 rounded-xl shadow-lg shadow-agro-700/25 transition-all hover:-translate-y-0.5">
+                        <i class="fa-solid fa-qrcode text-amber-300"></i>
+                        <span>Inscrever-se Grátis</span>
+                    </a>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="mobileMenuBtn" onclick="toggleMobileMenu()" class="lg:hidden p-2.5 rounded-xl text-stone-600 hover:bg-stone-100 focus:outline-none" aria-label="Abrir menu">
+                    <i class="fa-solid fa-bars text-xl" id="menuIcon"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobileMenu" class="hidden lg:hidden border-b border-stone-200 bg-white px-5 pt-3 pb-6 space-y-3 shadow-xl">
+            <a href="#sobre" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-stone-700 hover:text-agro-700">Sobre o Evento</a>
+            <a href="#programacao" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-stone-700 hover:text-agro-700">Programação de Palestras</a>
+            <a href="#expositores" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-stone-700 hover:text-agro-700">Expositores e Produtores</a>
+            <a href="#local" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-stone-700 hover:text-agro-700">Como Chegar</a>
+            <a href="#faq" onclick="toggleMobileMenu()" class="block py-2 text-sm font-semibold text-stone-700 hover:text-agro-700">Dúvidas Frequentes</a>
+            
+            <button type="button" onclick="openOrganizerLoginModal(); toggleMobileMenu();" class="w-full text-left py-2.5 text-xs font-bold text-stone-600 hover:text-agro-800 flex items-center gap-2 border-t border-stone-200 pt-3">
+                <i class="fa-solid fa-shield-halved text-stone-500"></i>
+                <span>Acesso Secretaria & Organizador</span>
+            </button>
+            
+            <a href="#inscricao" onclick="toggleMobileMenu()" class="block text-center w-full bg-agro-700 text-white font-bold text-sm py-3 rounded-xl shadow-md">
+                <i class="fa-solid fa-qrcode mr-2 text-amber-300"></i> Inscrever-se Agora
+            </a>
+        </div>
+    </header>
+
+    <section class="relative bg-gradient-to-b from-agro-950 via-agro-900 to-agro-950 text-white overflow-hidden py-20 lg:py-28">
+        <!-- Subtle background glow -->
+        <div class="absolute -top-40 -right-40 w-96 h-96 bg-emerald-500/20 rounded-full blur-3xl animate-pulse-slow pointer-events-none"></div>
+        <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-amber-500/15 rounded-full blur-3xl animate-pulse-slow pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Hero Left Column -->
+                <div class="lg:col-span-7 text-center lg:text-left space-y-6">
+                    <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 rounded-full text-xs font-semibold text-amber-300">
+                        <i class="fa-solid fa-calendar-check"></i>
+                        <span>Sábado Especial no Campo &bull; Entrada 100% Gratuita</span>
+                    </div>
+
+                    <h2 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                        Conectando a força do campo com a <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-300">inovação e juventude</span>.
+                    </h2>
+
+                    <p class="text-stone-300 text-base sm:text-lg leading-relaxed max-w-2xl mx-auto lg:mx-0 font-normal">
+                        A tradicional <strong>EE Dr. Messias da Fonseca</strong> abre suas portas para a comunidade de Cajuru e região da Alta Mogiana: palestras com especialistas, cafeicultura especial, queijos artesanais, agro-tecnologia, cooperativismo e certificado oficial de 8 horas.
+                    </p>
+
+                    <!-- Key Event Pills -->
+                    <div class="flex flex-wrap gap-4 justify-center lg:justify-start pt-2">
+                        <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 backdrop-blur-sm">
+                            <div class="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div class="text-left">
+                                <span class="block text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Local do Evento</span>
+                                <strong class="text-xs sm:text-sm text-white font-bold">EE Dr. Messias da Fonseca, Cajuru</strong>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl px-4 py-3 backdrop-blur-sm">
+                            <div class="w-10 h-10 rounded-xl bg-emerald-400/20 text-emerald-300 flex items-center justify-center text-lg">
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <div class="text-left">
+                                <span class="block text-[10px] text-stone-400 uppercase tracking-wider font-semibold">Certificação</span>
+                                <strong class="text-xs sm:text-sm text-white font-bold">Certificado Oficial de 8 Horas</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Call to action buttons -->
+                    <div class="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start">
+                        <a href="#inscricao" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-stone-950 font-black text-sm uppercase tracking-wider px-8 py-4 rounded-2xl shadow-xl shadow-amber-500/20 transition-all hover:scale-105">
+                            <i class="fa-solid fa-id-card text-lg"></i>
+                            <span>Fazer Minha Inscrição</span>
+                        </a>
+                        <a href="#programacao" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 text-white font-bold text-sm px-7 py-4 rounded-2xl border border-white/20 transition-all">
+                            <i class="fa-regular fa-clock"></i>
+                            <span>Ver Programação</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Hero Right Column: Dynamic Event Access Pass & QR -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="w-full max-w-sm bg-gradient-to-b from-stone-900 to-stone-950 border border-stone-700/80 rounded-3xl p-7 shadow-2xl relative overflow-hidden text-center">
+                        <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-emerald-500 via-amber-400 to-agro-600"></div>
+
+                        <div class="flex justify-between items-center mb-4 text-left">
+                            <div>
+                                <span class="text-[10px] uppercase font-bold tracking-widest text-amber-400">Credencial Digital</span>
+                                <h3 class="text-sm font-black text-white">Acesso Rápido</h3>
+                            </div>
+                            <div class="w-8 h-8 rounded-full bg-agro-500/20 text-emerald-400 flex items-center justify-center text-xs">
+                                <i class="fa-solid fa-wifi"></i>
+                            </div>
+                        </div>
+
+                        <!-- Main Event QR Code Box -->
+                        <div class="bg-white p-4 rounded-2xl shadow-inner inline-block mx-auto my-2 border border-stone-200">
+                            <div id="heroQRCode" class="flex justify-center items-center w-[180px] h-[180px]"></div>
+                        </div>
+
+                        <p class="text-xs text-stone-300 font-medium mt-3">
+                            Aponte a câmera do seu celular para abrir o formulário instantâneo ou inscreva-se abaixo.
+                        </p>
+
+                        <div class="mt-5 pt-4 border-t border-stone-800 text-[11px] text-stone-400 flex items-center justify-around">
+                            <span><i class="fa-solid fa-check text-emerald-400 mr-1"></i> Credencial Digital</span>
+                            <span><i class="fa-solid fa-check text-emerald-400 mr-1"></i> Check-in Rápido</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="sobre" class="py-20 bg-white border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-agro-700 bg-agro-50 px-3 py-1 rounded-full border border-agro-200">
+                    Tradição e Futuro em Cajuru
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-stone-900 mt-3 mb-4">
+                    O Encontro do Produtor Rural com a Educação Empreendedora
+                </h2>
+                <p class="text-stone-600 text-sm sm:text-base leading-relaxed">
+                    Sediado na centenária <strong>Escola Estadual Dr. Messias da Fonseca</strong>, o evento visa fortalecer o agronegócio familiar, fomentar novas fontes de renda para os produtores de Cajuru e aproximar os jovens estudantes das oportunidades modernas do campo.
+                </p>
+            </div>
+
+            <!-- Pillars Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-stone-50 border border-stone-200/80 rounded-3xl p-8 hover:shadow-xl transition-all group">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-500/10 text-amber-600 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-900 mb-2">Cafés Especiais da Mogiana</h3>
+                    <p class="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                        Cajuru situa-se em uma das zonas cafeeiras mais prestigiadas do Brasil. Aprenda técnicas de manejo pós-colheita, secagem em terreiro suspenso e torra artesanal para valorizar a saca.
+                    </p>
+                </div>
+
+                <div class="bg-stone-50 border border-stone-200/80 rounded-3xl p-8 hover:shadow-xl transition-all group">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-drone"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-900 mb-2">Inovação e AgroTech</h3>
+                    <p class="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                        Demonstração de drones de pulverização, sensores de umidade para pastagens e aplicativos de gestão de propriedades rurais acessíveis a pequenas e médias fazendas.
+                    </p>
+                </div>
+
+                <div class="bg-stone-50 border border-stone-200/80 rounded-3xl p-8 hover:shadow-xl transition-all group">
+                    <div class="w-14 h-14 rounded-2xl bg-agro-500/10 text-agro-700 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <i class="fa-solid fa-cheese"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-stone-900 mb-2">Pecuária Leiteira & Queijarias</h3>
+                    <p class="text-stone-600 text-xs sm:text-sm leading-relaxed">
+                        Agregação de valor ao leite com técnicas de queijos finos e autorais, boas práticas de ordenha, certificação sanitária (SIM/SISBI) e cooperativismo regional.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="programacao" class="py-20 bg-stone-100/70 border-b border-stone-200">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-agro-700 bg-agro-100/60 px-3 py-1 rounded-full border border-agro-200">
+                        Cronograma Oficial
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-stone-900 mt-2">
+                        Palestras & Oficinas Práticas
+                    </h2>
+                    <p class="text-stone-600 text-xs sm:text-sm mt-1">
+                        Carga horária total de 8 horas com direito a certificado para participantes presentes.
+                    </p>
+                </div>
+
+                <!-- Schedule Filter Tabs -->
+                <div class="flex items-center gap-2 bg-stone-200/80 p-1.5 rounded-2xl">
+                    <button onclick="filterSchedule('all')" id="tabAll" class="px-4 py-2 rounded-xl text-xs font-bold transition-all bg-white text-stone-900 shadow-sm">
+                        Todas as Atividades
+                    </button>
+                    <button onclick="filterSchedule('morning')" id="tabMorning" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900">
+                        Manhã (08h - 12h)
+                    </button>
+                    <button onclick="filterSchedule('afternoon')" id="tabAfternoon" class="px-4 py-2 rounded-xl text-xs font-bold transition-all text-stone-600 hover:text-stone-900">
+                        Tarde (13h30 - 17h)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Schedule Items Container -->
+            <div class="space-y-4" id="scheduleContainer">
+                
+                <!-- Item 1 -->
+                <div class="schedule-item morning bg-white border border-stone-200/90 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-agro-400 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-700 flex flex-col items-center justify-center shrink-0">
+                            <span class="text-xs font-black uppercase">08:00</span>
+                            <span class="text-[10px] text-amber-800 font-semibold">Abertura</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Recepção</span>
+                            <h3 class="text-base font-bold text-stone-900 mt-1">Credenciamento & Café com Prosa da Roça</h3>
+                            <p class="text-xs text-stone-500 mt-1">Validação do QR Code na entrada da escola, entrega de crachás e café da manhã com produtos típicos de produtores cajuruenses.</p>
+                            <span class="inline-block mt-2 text-xs text-stone-400"><i class="fa-solid fa-location-pin text-agro-600 mr-1"></i> Pátio Central da EE Dr. Messias da Fonseca</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-agro-700 bg-agro-50 px-3 py-1.5 rounded-xl self-start md:self-center border border-agro-200 shrink-0">Livre</span>
+                </div>
+
+                <!-- Item 2 -->
+                <div class="schedule-item morning bg-white border border-stone-200/90 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-agro-400 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-agro-50 border border-agro-200 text-agro-700 flex flex-col items-center justify-center shrink-0">
+                            <span class="text-xs font-black uppercase">09:00</span>
+                            <span class="text-[10px] text-agro-800 font-semibold">Palestra</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-agro-700 bg-agro-50 px-2 py-0.5 rounded">Cafeicultura</span>
+                            <h3 class="text-base font-bold text-stone-900 mt-1">Cafés Especiais da Alta Mogiana: Do Grão à Xícara de Alto Valor</h3>
+                            <p class="text-xs text-stone-500 mt-1">Palestrante: Eng. Agrônomo convidado (CATI / Sindicato Rural). Como produzir cafés com pontuação 84+ e comercializar diretamente para cafeterias gourmet.</p>
+                            <span class="inline-block mt-2 text-xs text-stone-400"><i class="fa-solid fa-location-pin text-agro-600 mr-1"></i> Auditório Principal</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl self-start md:self-center shrink-0">1h30 min</span>
+                </div>
+
+                <!-- Item 3 -->
+                <div class="schedule-item morning bg-white border border-stone-200/90 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-agro-400 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-700 flex flex-col items-center justify-center shrink-0">
+                            <span class="text-xs font-black uppercase">10:45</span>
+                            <span class="text-[10px] text-emerald-800 font-semibold">Oficina</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Tecnologia</span>
+                            <h3 class="text-base font-bold text-stone-900 mt-1">Drones Agrícolas e Monitoramento de Lavoura de Baixo Custo</h3>
+                            <p class="text-xs text-stone-500 mt-1">Demonstração ao vivo no campo esportivo da escola: captação de imagens NDVI para detecção de pragas e pulverização dirigida.</p>
+                            <span class="inline-block mt-2 text-xs text-stone-400"><i class="fa-solid fa-location-pin text-agro-600 mr-1"></i> Campo Aberto da Escola</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl self-start md:self-center shrink-0">1h15 min</span>
+                </div>
+
+                <!-- Item 4 -->
+                <div class="schedule-item afternoon bg-white border border-stone-200/90 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-agro-400 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 flex flex-col items-center justify-center shrink-0">
+                            <span class="text-xs font-black uppercase">13:30</span>
+                            <span class="text-[10px] text-blue-800 font-semibold">Painel</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded">Finanças & Gestão</span>
+                            <h3 class="text-base font-bold text-stone-900 mt-1">Linhas de Crédito Pronaf, Plano Safra e Sucessão Familiar</h3>
+                            <p class="text-xs text-stone-500 mt-1">Especialistas de cooperativas de crédito de Cajuru explicando o acesso a recursos para jovens produtores rurais e mulheres empreendedoras.</p>
+                            <span class="inline-block mt-2 text-xs text-stone-400"><i class="fa-solid fa-location-pin text-agro-600 mr-1"></i> Sala Temática 01</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl self-start md:self-center shrink-0">1h15 min</span>
+                </div>
+
+                <!-- Item 5 -->
+                <div class="schedule-item afternoon bg-white border border-stone-200/90 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-agro-400 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-purple-50 border border-purple-200 text-purple-700 flex flex-col items-center justify-center shrink-0">
+                            <span class="text-xs font-black uppercase">15:00</span>
+                            <span class="text-[10px] text-purple-800 font-semibold">Oficina Prática</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-purple-700 bg-purple-50 px-2 py-0.5 rounded">Valor Agregado</span>
+                            <h3 class="text-base font-bold text-stone-900 mt-1">Da Vaca ao Queijo Artesanal: Higiene e Criação de Marca Rural</h3>
+                            <p class="text-xs text-stone-500 mt-1">Degustação guiada de queijos artesanais da região, regras de embalagem, rotulagem e comercialização em feiras livres e empórios.</p>
+                            <span class="inline-block mt-2 text-xs text-stone-400"><i class="fa-solid fa-location-pin text-agro-600 mr-1"></i> Laboratório de Práticas</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-stone-600 bg-stone-100 px-3 py-1.5 rounded-xl self-start md:self-center shrink-0">1h30 min</span>
+                </div>
+
+                <!-- Item 6 -->
+                <div class="schedule-item afternoon bg-white border border-stone-200/90 rounded-2xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6 hover:border-agro-400 transition-all">
+                    <div class="flex items-start gap-4">
+                        <div class="w-16 h-16 rounded-2xl bg-agro-700 text-white flex flex-col items-center justify-center shrink-0">
+                            <span class="text-xs font-black uppercase">16:45</span>
+                            <span class="text-[10px] text-amber-300 font-semibold">Encerramento</span>
+                        </div>
+                        <div>
+                            <span class="text-[11px] font-bold uppercase tracking-wider text-agro-800 bg-agro-100 px-2 py-0.5 rounded">Solenidade</span>
+                            <h3 class="text-base font-bold text-stone-900 mt-1">Premiação dos Jovens Empreendedores & Liberação de Certificados</h3>
+                            <p class="text-xs text-stone-500 mt-1">Homenagem aos produtores destaque de Cajuru, entrega de menções honrosas pela EE Dr. Messias da Fonseca e validação final da lista de presença.</p>
+                            <span class="inline-block mt-2 text-xs text-stone-400"><i class="fa-solid fa-location-pin text-agro-600 mr-1"></i> Auditório Principal</span>
+                        </div>
+                    </div>
+                    <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-xl self-start md:self-center shrink-0 border border-emerald-200">Certificados</span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="expositores" class="py-20 bg-white border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-agro-700 bg-agro-50 px-3 py-1 rounded-full border border-agro-200">
+                    Feira & Negócios Locais
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-stone-900 mt-3 mb-3">
+                    Expositores e Produtores Confirmados
+                </h2>
+                <p class="text-stone-600 text-sm">
+                    Conheça quem faz a força agropecuária e gastronômica de Cajuru acontecer no pátio da escola.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Stand 1 -->
+                <div class="bg-stone-50 border border-stone-200 rounded-3xl p-6 hover:shadow-lg transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-mug-saucer"></i>
+                        </div>
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Café Especial</span>
+                        <h3 class="font-bold text-stone-900 mt-2 text-base">Cafés da Serra de Cajuru</h3>
+                        <p class="text-xs text-stone-500 mt-1">Microlotes selecionados acima de 85 pontos com notas de caramelo e frutas amarelas.</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-stone-200 text-xs text-stone-400 font-medium">
+                        <i class="fa-solid fa-store mr-1 text-agro-600"></i> Stand 01 &bull; Pátio
+                    </div>
+                </div>
+
+                <!-- Stand 2 -->
+                <div class="bg-stone-50 border border-stone-200 rounded-3xl p-6 hover:shadow-lg transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-cheese"></i>
+                        </div>
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">Laticínios Artesanais</span>
+                        <h3 class="font-bold text-stone-900 mt-2 text-base">Queijaria Bela Vista Cajuru</h3>
+                        <p class="text-xs text-stone-500 mt-1">Queijos meia-cura, trufados e padrão com leite cru de vacas Girolando selecionadas.</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-stone-200 text-xs text-stone-400 font-medium">
+                        <i class="fa-solid fa-store mr-1 text-agro-600"></i> Stand 04 &bull; Pátio
+                    </div>
+                </div>
+
+                <!-- Stand 3 -->
+                <div class="bg-stone-50 border border-stone-200 rounded-3xl p-6 hover:shadow-lg transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-laptop-code"></i>
+                        </div>
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded">Educação e Inovação</span>
+                        <h3 class="font-bold text-stone-900 mt-2 text-base">Projetos EE Dr. Messias</h3>
+                        <p class="text-xs text-stone-500 mt-1">Mostra de protótipos de irrigação sustentável desenvolvidos pelos alunos do ensino médio.</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-stone-200 text-xs text-stone-400 font-medium">
+                        <i class="fa-solid fa-store mr-1 text-agro-600"></i> Stand 08 &bull; Hall Central
+                    </div>
+                </div>
+
+                <!-- Stand 4 -->
+                <div class="bg-stone-50 border border-stone-200 rounded-3xl p-6 hover:shadow-lg transition-all flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 rounded-2xl bg-orange-100 text-orange-800 flex items-center justify-center text-xl mb-4">
+                            <i class="fa-solid fa-jar"></i>
+                        </div>
+                        <span class="text-[10px] uppercase font-bold tracking-wider text-orange-700 bg-orange-50 px-2 py-0.5 rounded">Doces & Conservas</span>
+                        <h3 class="font-bold text-stone-900 mt-2 text-base">Sabores da Roça Cajuruense</h3>
+                        <p class="text-xs text-stone-500 mt-1">Doces em tacho de cobre, mel silvestre de florada nativa e compotas tradicionais.</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-stone-200 text-xs text-stone-400 font-medium">
+                        <i class="fa-solid fa-store mr-1 text-agro-600"></i> Stand 12 &bull; Praça de Alimentação
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="inscricao" class="py-20 bg-stone-900 text-white relative">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-amber-400 bg-amber-400/10 px-3.5 py-1 rounded-full border border-amber-400/20">
+                    Credenciamento Gratuito
+                </span>
+                <h2 class="text-3xl sm:text-4xl font-black text-white mt-3 mb-3">
+                    Faça sua Inscrição & Gere seu QR Code
+                </h2>
+                <p class="text-stone-400 text-xs sm:text-sm">
+                    Preencha o formulário para garantir sua vaga, agilizar o check-in na entrada da escola e habilitar a emissão do seu certificado oficial de participação.
+                </p>
+            </div>
+
+            <!-- Registration Card -->
+            <div class="bg-stone-800/90 border border-stone-700 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-sm">
+                
+                <form id="registrationForm" onsubmit="handleFormSubmit(event)" class="space-y-6">
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <!-- Full Name -->
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-2" for="regName">
+                                Nome Completo (para o Certificado) <span class="text-amber-400">*</span>
+                            </label>
+                            <input type="text" id="regName" required placeholder="Ex: Maria Aparecida da Silva" class="w-full px-4 py-3.5 rounded-2xl bg-stone-900 border border-stone-700 text-white placeholder-stone-500 text-sm focus:outline-none focus:border-amber-400 transition-all">
+                        </div>
+
+                        <!-- Email -->
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-2" for="regEmail">
+                                E-mail de Contato <span class="text-amber-400">*</span>
+                            </label>
+                            <input type="email" id="regEmail" required placeholder="seuemail@exemplo.com" class="w-full px-4 py-3.5 rounded-2xl bg-stone-900 border border-stone-700 text-white placeholder-stone-500 text-sm focus:outline-none focus:border-amber-400 transition-all">
+                        </div>
+
+                        <!-- Phone / WhatsApp -->
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-2" for="regPhone">
+                                WhatsApp / Telefone <span class="text-amber-400">*</span>
+                            </label>
+                            <input type="tel" id="regPhone" required placeholder="(16) 99999-9999" class="w-full px-4 py-3.5 rounded-2xl bg-stone-900 border border-stone-700 text-white placeholder-stone-500 text-sm focus:outline-none focus:border-amber-400 transition-all">
+                        </div>
+
+                        <!-- City -->
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-2" for="regCity">
+                                Cidade / Município <span class="text-amber-400">*</span>
+                            </label>
+                            <input type="text" id="regCity" required value="Cajuru - SP" placeholder="Ex: Cajuru, Altinópolis, etc." class="w-full px-4 py-3.5 rounded-2xl bg-stone-900 border border-stone-700 text-white placeholder-stone-500 text-sm focus:outline-none focus:border-amber-400 transition-all">
+                        </div>
+
+                        <!-- Participant Profile -->
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-2" for="regProfile">
+                                Perfil do Participante
+                            </label>
+                            <select id="regProfile" class="w-full px-4 py-3.5 rounded-2xl bg-stone-900 border border-stone-700 text-white text-sm focus:outline-none focus:border-amber-400 transition-all">
+                                <option value="Produtor Rural">Produtor Rural / Agricultor Familiar</option>
+                                <option value="Estudante">Estudante (EE Dr. Messias / Região)</option>
+                                <option value="Professor / Educador">Professor / Educador</option>
+                                <option value="Empresário / Comerciante">Empresário / Comerciante Local</option>
+                                <option value="Comunidade em Geral">Comunidade em Geral / Visitante</option>
+                            </select>
+                        </div>
+
+                        <!-- Interest Area -->
+                        <div>
+                            <label class="block text-xs font-bold text-stone-300 uppercase tracking-wider mb-2" for="regInterest">
+                                Área de Maior Interesse
+                            </label>
+                            <select id="regInterest" class="w-full px-4 py-3.5 rounded-2xl bg-stone-900 border border-stone-700 text-white text-sm focus:outline-none focus:border-amber-400 transition-all">
+                                <option value="Cafés Especiais">Cafés Especiais & Qualidade de Grãos</option>
+                                <option value="AgroTech & Drones">AgroTech, Drones e Maquinários</option>
+                                <option value="Queijaria & Pecuária">Queijaria Artesanal & Pecuária de Leite</option>
+                                <option value="Crédito Rural & Cooperativismo">Crédito Rural e Cooperativismo</option>
+                                <option value="Gastronomia da Roça">Gastronomia da Roça e Artesanato</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- LGPD Compliance Consent Checkbox -->
+                    <div class="bg-stone-900/90 border border-stone-700/80 p-4 rounded-2xl">
+                        <label class="flex items-start gap-3 cursor-pointer">
+                            <input type="checkbox" id="lgpdConsent" required class="mt-1 rounded border-stone-600 bg-stone-800 text-amber-500 focus:ring-amber-400 w-4 h-4">
+                            <span class="text-xs text-stone-300 leading-relaxed">
+                                <strong class="text-amber-400">Consentimento LGPD (Lei nº 13.709/2018):</strong> Autorizo a comissão organizadora da <strong>EE Dr. Messias da Fonseca</strong> a coletar meus dados exclusivamente para credenciamento no evento, registro na lista oficial de presença e emissão do certificado de participação de 8 horas. Os dados cadastrais são sigilosos e não serão divulgados publicamente a terceiros.
+                            </span>
+                        </label>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-stone-950 font-black py-4 rounded-2xl shadow-xl shadow-amber-500/20 text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-3">
+                        <i class="fa-solid fa-qrcode text-lg"></i>
+                        <span>Concluir Inscrição & Gerar Credencial</span>
+                    </button>
+                </form>
+
+            </div>
+
+            <div id="credentialDisplay" class="hidden mt-10 bg-white text-stone-900 rounded-3xl p-8 shadow-2xl border-4 border-agro-700">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-8 pb-6 border-b border-stone-200">
+                    <div class="text-center md:text-left">
+                        <span class="text-[10px] font-black uppercase tracking-widest text-agro-800 bg-agro-100 px-3 py-1 rounded-full">
+                            Inscrição Confirmada com Sucesso!
+                        </span>
+                        <h3 class="text-2xl font-black text-stone-900 mt-2" id="cardParticipantName">Nome do Participante</h3>
+                        <p class="text-xs text-stone-500 mt-1" id="cardParticipantDetails">Produtor Rural &bull; Cajuru - SP</p>
+                        <div class="mt-3 inline-block bg-stone-100 px-3 py-1 rounded-lg text-xs font-mono font-bold text-stone-700 border border-stone-200" id="cardTicketCode">
+                            CÓDIGO: FER-000000
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <div id="participantQRCode" class="bg-white p-3 rounded-2xl shadow border border-stone-200 inline-block"></div>
+                        <span class="block text-[10px] text-stone-400 font-semibold mt-2">Apresente este QR Code na portaria</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-6">
+                    <div class="text-xs text-stone-500">
+                        <i class="fa-solid fa-circle-info text-amber-500 mr-1"></i>
+                        Após comparecer ao evento e realizar o check-in, seu certificado estará disponível para download.
+                    </div>
+                    <div class="flex gap-3 w-full sm:w-auto">
+                        <button onclick="window.print()" class="px-5 py-2.5 rounded-xl border border-stone-300 text-xs font-bold text-stone-700 hover:bg-stone-50 transition-all">
+                            <i class="fa-solid fa-print mr-1.5"></i> Imprimir Credencial
+                        </button>
+                        <button onclick="previewMyCertificate()" class="px-5 py-2.5 rounded-xl bg-agro-700 hover:bg-agro-800 text-white text-xs font-bold shadow transition-all">
+                            <i class="fa-solid fa-award mr-1.5 text-amber-300"></i> Visualizar Certificado
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="presenca-painel" class="py-20 bg-stone-950 text-white relative border-t border-stone-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            
+            <!-- Lock Gate (Default public state protecting privacy) -->
+            <div id="organizerLockedView" class="max-w-xl mx-auto text-center py-8">
+                <div class="w-16 h-16 rounded-2xl bg-amber-400/10 border border-amber-400/20 text-amber-400 flex items-center justify-center text-2xl mx-auto mb-4">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <span class="text-xs font-black uppercase tracking-widest text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full border border-amber-400/20">
+                    Acesso Restrito &bull; LGPD (Lei nº 13.709/2018)
+                </span>
+                <h2 class="text-2xl sm:text-3xl font-black mt-4 mb-2 text-white">Área da Secretaria & Organizadores</h2>
+                <p class="text-xs sm:text-sm text-stone-400 mb-6 leading-relaxed">
+                    Para garantir o sigilo dos dados dos participantes conforme as diretrizes da LGPD, a lista de presença e a emissão institucional de certificados requerem validação com a chave de acesso da EE Dr. Messias da Fonseca.
+                </p>
+                <button type="button" onclick="openOrganizerLoginModal()" class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-stone-950 font-black text-xs uppercase tracking-wider px-7 py-3.5 rounded-xl shadow-lg transition-all">
+                    <i class="fa-solid fa-key text-stone-950"></i>
+                    <span>Autenticar como Organizador</span>
+                </button>
+            </div>
+
+            <!-- Unlocked Admin Dashboard (Visible only after correct authentication) -->
+            <div id="organizerUnlockedView" class="hidden">
+                <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 pb-6 border-b border-stone-800">
+                    <div>
+                        <span class="text-emerald-400 font-bold text-xs tracking-wider uppercase bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full inline-flex items-center gap-1.5 mb-2">
+                            <i class="fa-solid fa-circle text-[7px] text-emerald-400 animate-pulse"></i> Sessão Autorizada (Secretaria)
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white">Controle de Presença & Certificação</h2>
+                        <p class="text-stone-400 text-xs mt-1">Valide o check-in dos presentes para habilitar a emissão de certificados oficiais.</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-3">
+                        <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow transition-all">
+                            <i class="fa-solid fa-file-csv"></i>
+                            <span>Exportar Lista (.CSV)</span>
+                        </button>
+                        <button onclick="printAttendanceSheet()" class="bg-stone-800 hover:bg-stone-700 text-stone-200 border border-stone-700 text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow transition-all">
+                            <i class="fa-solid fa-print"></i>
+                            <span>Folha de Assinaturas</span>
+                        </button>
+                        <button onclick="lockOrganizerArea()" class="bg-rose-600/20 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 text-xs font-bold px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition-all" title="Encerrar sessão de organizador">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>Bloquear / Sair</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Metrics Summary -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-5 mb-8">
+                    <div class="bg-stone-900 border border-stone-800 p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] text-stone-400 uppercase tracking-wider font-semibold">Total de Inscritos</span>
+                            <div class="text-3xl font-black text-white mt-1" id="metricTotal">0</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-900 border border-stone-800 p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] text-stone-400 uppercase tracking-wider font-semibold">Presenças Confirmadas</span>
+                            <div class="text-3xl font-black text-emerald-400 mt-1" id="metricPresentes">0</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-user-check"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-900 border border-stone-800 p-5 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <span class="text-[11px] text-stone-400 uppercase tracking-wider font-semibold">Certificados Aptos</span>
+                            <div class="text-3xl font-black text-amber-400 mt-1" id="metricCertificados">0</div>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-award"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Filter & Search Controls -->
+                <div class="bg-stone-900 border border-stone-800 p-4 rounded-2xl mb-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="relative w-full sm:w-96">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-stone-500 text-xs"></i>
+                        <input type="text" id="tableSearch" oninput="filterAttendanceTable()" placeholder="Buscar por nome, código ou cidade..." class="w-full pl-9 pr-4 py-2 bg-stone-950 border border-stone-800 rounded-xl text-xs text-white placeholder-stone-500 focus:outline-none focus:border-amber-400">
+                    </div>
+
+                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+                        <span class="text-xs text-stone-400">Status:</span>
+                        <select id="statusFilter" onchange="filterAttendanceTable()" class="bg-stone-950 border border-stone-800 rounded-xl px-3 py-2 text-xs text-stone-200 focus:outline-none focus:border-amber-400">
+                            <option value="all">Todos os Participantes</option>
+                            <option value="presente">Apenas Confirmados (Presentes)</option>
+                            <option value="pendente">Apenas Pendentes de Check-in</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Attendance Table -->
+                <div class="bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden shadow-2xl">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs text-stone-300">
+                            <thead class="bg-stone-950 uppercase text-[10px] tracking-wider text-stone-400 border-b border-stone-800">
+                                <tr>
+                                    <th class="py-3.5 px-4">Código</th>
+                                    <th class="py-3.5 px-4">Participante</th>
+                                    <th class="py-3.5 px-4">Perfil</th>
+                                    <th class="py-3.5 px-4">Cidade</th>
+                                    <th class="py-3.5 px-4 text-center">Status Check-in</th>
+                                    <th class="py-3.5 px-4 text-right">Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceTableBody" class="divide-y divide-stone-800 font-sans">
+                                <!-- Populated dynamically by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="local" class="py-20 bg-white border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-agro-700 bg-agro-50 px-3 py-1 rounded-full border border-agro-200">
+                        Sede do Evento
+                    </span>
+                    <h2 class="text-3xl sm:text-4xl font-black text-stone-900">
+                        EE Dr. Messias da Fonseca
+                    </h2>
+                    <p class="text-stone-600 text-sm leading-relaxed">
+                        Instituição de ensino histórica e referência no município de Cajuru - SP, com espaço amplo, pátio coberto, auditório e quadra poliesportiva para abrigar produtores, estandes e visitantes com total conforto e acessibilidade.
+                    </p>
+
+                    <div class="space-y-3 pt-2">
+                        <div class="flex items-start gap-3 text-xs text-stone-700">
+                            <i class="fa-solid fa-location-dot text-agro-700 text-sm mt-0.5"></i>
+                            <div>
+                                <strong class="text-stone-900 font-bold block">Endereço:</strong>
+                                <span>Rua Cel. José Teodoro, Centro, Cajuru - SP, CEP 14240-000</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3 text-xs text-stone-700">
+                            <i class="fa-solid fa-clock text-agro-700 text-sm mt-0.5"></i>
+                            <div>
+                                <strong class="text-stone-900 font-bold block">Horário da Feira:</strong>
+                                <span>Das 08h00 às 17h30 (Sábado)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-3 pt-4">
+                        <button onclick="copyAddressToClipboard()" class="px-5 py-3 rounded-xl bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold flex items-center gap-2 transition-all">
+                            <i class="fa-regular fa-copy"></i>
+                            <span>Copiar Endereço</span>
+                        </button>
+                        <a href="https://maps.google.com/?q=Escola+Estadual+Dr+Messias+da+Fonseca+Cajuru+SP" target="_blank" rel="noopener noreferrer" class="px-5 py-3 rounded-xl bg-agro-700 hover:bg-agro-800 text-white text-xs font-bold flex items-center gap-2 shadow transition-all">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>Abrir no Google Maps</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7">
+                    <div class="w-full h-80 sm:h-96 rounded-3xl overflow-hidden border border-stone-300 shadow-xl relative bg-stone-100">
+                        <iframe 
+                            title="Mapa EE Dr Messias da Fonseca Cajuru"
+                            class="w-full h-full border-0" 
+                            src="https://maps.google.com/maps?q=Escola+Dr+Messias+da+Fonseca+Cajuru+SP&t=&z=16&ie=UTF8&iwloc=&output=embed" 
+                            loading="lazy" 
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-20 bg-stone-50 border-b border-stone-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-agro-700 bg-agro-100/70 px-3 py-1 rounded-full border border-agro-200">
+                    Tire Suas Dúvidas
+                </span>
+                <h2 class="text-3xl font-black text-stone-900 mt-2">
+                    Perguntas Frequentes
+                </h2>
+            </div>
+
+            <div class="space-y-4">
+                <div class="bg-white border border-stone-200/80 rounded-2xl p-5">
+                    <h3 class="font-bold text-stone-900 text-sm mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-agro-700"></i>
+                        A inscrição e a entrada no evento são pagas?
+                    </h3>
+                    <p class="text-xs text-stone-600 pl-6 leading-relaxed">
+                        Não! A feira é 100% gratuita para toda a comunidade de Cajuru e cidades vizinhas.
+                    </p>
+                </div>
+
+                <div class="bg-white border border-stone-200/80 rounded-2xl p-5">
+                    <h3 class="font-bold text-stone-900 text-sm mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-agro-700"></i>
+                        Como receberei meu Certificado de 8 Horas?
+                    </h3>
+                    <p class="text-xs text-stone-600 pl-6 leading-relaxed">
+                        Ao chegar na escola, apresente seu QR Code na secretaria para registrar sua presença. Assim que o check-in for confirmado, você poderá visualizar, baixar ou imprimir seu certificado oficial com chancela da EE Dr. Messias da Fonseca diretamente nesta página.
+                    </p>
+                </div>
+
+                <div class="bg-white border border-stone-200/80 rounded-2xl p-5">
+                    <h3 class="font-bold text-stone-900 text-sm mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-agro-700"></i>
+                        Como meus dados são protegidos pela LGPD?
+                    </h3>
+                    <p class="text-xs text-stone-600 pl-6 leading-relaxed">
+                        Seus dados pessoais (nome, e-mail, telefone) são armazenados em ambiente fechado e são estritamente acessados pela equipe da secretaria da escola para finalidade pedagógica e controle da lista de presença oficial, não sendo compartilhados com terceiros.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-stone-950 text-stone-400 py-12 border-t border-stone-800 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-3 text-center sm:text-left">
+                <div class="w-10 h-10 rounded-xl bg-agro-800 text-white flex items-center justify-center text-lg">
+                    <i class="fa-solid fa-seedling text-amber-300"></i>
+                </div>
+                <div>
+                    <span class="text-white font-bold block text-sm">Feira de Empreendedorismo Rural &bull; Cajuru / SP</span>
+                    <span class="text-stone-500 text-[11px]">Realização: EE Dr. Messias da Fonseca & Comunidade Escolar</span>
+                </div>
+            </div>
+
+            <div class="text-stone-500 text-center sm:text-right">
+                <p>Em conformidade com a LGPD (Lei nº 13.709/2018)</p>
+                <p class="text-[10px] mt-0.5">Certificação oficial com validade acadêmica e complementar.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="organizerAuthModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full shadow-2xl overflow-hidden border border-stone-200 p-6 text-stone-800">
+            <div class="flex items-center justify-between pb-3 border-b border-stone-100">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-agro-100 text-agro-700 flex items-center justify-center text-sm">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h3 class="font-bold text-sm text-stone-900">Acesso Secretaria & Organizador</h3>
+                </div>
+                <button onclick="closeOrganizerLoginModal()" class="text-stone-400 hover:text-stone-600 p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="py-4">
+                <p class="text-xs text-stone-600 leading-relaxed mb-4">
+                    Insira a chave da comissão da <strong>EE Dr. Messias da Fonseca</strong> para acessar a lista de presença e controle de credenciamento.
+                </p>
+
+                <form onsubmit="handleOrganizerAuthSubmit(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-stone-700 uppercase tracking-wider mb-1" for="organizerPassInput">
+                            Chave / Senha da Secretaria
+                        </label>
+                        <input type="password" id="organizerPassInput" placeholder="Digite a chave da escola..." required class="w-full px-4 py-2.5 rounded-xl border border-stone-300 text-sm focus:ring-2 focus:ring-agro-500 focus:border-agro-500 outline-none">
+                        <p class="text-[11px] text-stone-400 mt-1">Chave padrão inicial da comissão: <code class="bg-stone-100 px-1.5 py-0.5 rounded text-stone-600 font-mono">messias2026</code></p>
+                    </div>
+
+                    <div id="authErrorMsg" class="hidden text-xs text-rose-600 font-semibold flex items-center gap-1.5">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                        <span>Chave incorreta. Verifique e tente novamente.</span>
+                    </div>
+
+                    <div class="pt-2 flex gap-2">
+                        <button type="button" onclick="closeOrganizerLoginModal()" class="w-1/2 py-2.5 border border-stone-300 text-stone-700 text-xs font-bold rounded-xl hover:bg-stone-50">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="w-1/2 py-2.5 bg-agro-700 hover:bg-agro-800 text-white text-xs font-bold rounded-xl shadow">
+                            Desbloquear Painel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="certificateModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-4xl w-full shadow-2xl overflow-hidden border border-stone-200 relative my-8">
+            
+            <!-- Modal Header (Non-printed) -->
+            <div class="bg-stone-100 px-6 py-4 border-b border-stone-200 flex items-center justify-between no-print">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-award text-agro-700 text-lg"></i>
+                    <h3 class="font-bold text-sm text-stone-900">Certificado Oficial de Participação (8 Horas)</h3>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="printOfficialCertificate()" class="px-4 py-2 bg-agro-700 hover:bg-agro-800 text-white text-xs font-bold rounded-xl flex items-center gap-2 shadow transition-all">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Imprimir / Salvar em PDF</span>
+                    </button>
+                    <button onclick="closeCertificateModal()" class="text-stone-400 hover:text-stone-600 p-1">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Certificate Canvas / Content Area -->
+            <div id="printableCertificateArea" class="p-8 sm:p-14 bg-[#fffefc] text-stone-900 relative border-[12px] border-double border-agro-900 m-4 rounded-xl shadow-inner">
+                
+                <!-- Corner Decorations -->
+                <div class="absolute top-3 left-3 text-agro-700 text-xl"><i class="fa-solid fa-certificate"></i></div>
+                <div class="absolute top-3 right-3 text-agro-700 text-xl"><i class="fa-solid fa-certificate"></i></div>
+                <div class="absolute bottom-3 left-3 text-agro-700 text-xl"><i class="fa-solid fa-certificate"></i></div>
+                <div class="absolute bottom-3 right-3 text-agro-700 text-xl"><i class="fa-solid fa-certificate"></i></div>
+
+                <div class="text-center space-y-4">
+                    <span class="text-xs font-extrabold uppercase tracking-[0.25em] text-stone-500 block">
+                        Governo do Estado de São Paulo &bull; Secretaria da Educação
+                    </span>
+                    <h4 class="text-sm sm:text-base font-bold text-stone-700 tracking-wider uppercase">
+                        Escola Estadual Dr. Messias da Fonseca &bull; Cajuru - SP
+                    </h4>
+
+                    <div class="py-2">
+                        <h2 class="font-serif text-3xl sm:text-5xl font-black text-agro-900 tracking-tight">
+                            CERTIFICADO
+                        </h2>
+                        <span class="block text-xs uppercase tracking-widest text-amber-700 font-bold mt-1">
+                            DE PARTICIPAÇÃO OFICIAL
+                        </span>
+                    </div>
+
+                    <p class="text-xs sm:text-sm text-stone-700 max-w-2xl mx-auto leading-relaxed pt-2">
+                        Certificamos para os devidos fins que
+                    </p>
+
+                    <h3 id="certModalName" class="text-xl sm:text-3xl font-black text-stone-950 font-serif border-b-2 border-stone-300 pb-1 inline-block min-w-[300px]">
+                        Nome do Participante
+                    </h3>
+
+                    <p class="text-xs sm:text-sm text-stone-700 max-w-2xl mx-auto leading-relaxed">
+                        participou com êxito da <strong>I Feira de Empreendedorismo Rural de Cajuru</strong>, realizada nas dependências da <strong>EE Dr. Messias da Fonseca</strong>, integrando palestras, oficinas práticas sobre cafeicultura, pecuária, agregação de valor e novas tecnologias no campo, com carga horária total de <strong>8 (oito) horas</strong>.
+                    </p>
+
+                    <div class="pt-6 grid grid-cols-2 gap-8 max-w-lg mx-auto text-center border-t border-stone-200 mt-6">
+                        <div>
+                            <div class="h-10 flex items-end justify-center">
+                                <span class="font-serif italic text-sm text-stone-800">Direção Escolar</span>
+                            </div>
+                            <div class="border-t border-stone-400 mt-1 pt-1 text-[10px] uppercase font-bold text-stone-600">
+                                EE Dr. Messias da Fonseca
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="h-10 flex items-end justify-center">
+                                <span class="font-serif italic text-sm text-stone-800">Comissão Organizadora</span>
+                            </div>
+                            <div class="border-t border-stone-400 mt-1 pt-1 text-[10px] uppercase font-bold text-stone-600">
+                                Feira de Empreendedorismo Rural
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex items-center justify-between text-[10px] text-stone-400 border-t border-stone-100">
+                        <span>Cajuru - SP</span>
+                        <span id="certModalCode">Autenticidade: FER-000000</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Default Key and Storage Identifiers
+        const ORGANIZER_SECRET_KEY = "messias2026";
+        let isOrganizerAuthenticated = false;
+
+        // In-memory data store with realistic starter records
+        let registrationsList = [
+            {
+                code: "FER-849102",
+                name: "Benedito Aparecido de Souza",
+                email: "benedito.agro@cajuru.sp.gov.br",
+                phone: "(16) 99712-3456",
+                city: "Cajuru - SP",
+                profile: "Produtor Rural",
+                interest: "Cafés Especiais",
+                checkedIn: true,
+                createdAt: "10/09/2026 08:15"
+            },
+            {
+                code: "FER-492817",
+                name: "Larissa Helena Moreira",
+                email: "larissa.estudante@messias.edu.br",
+                phone: "(16) 99888-1122",
+                city: "Cajuru - SP",
+                profile: "Estudante",
+                interest: "AgroTech & Drones",
+                checkedIn: true,
+                createdAt: "10/09/2026 08:30"
+            },
+            {
+                code: "FER-103948",
+                name: "Carlos Eduardo Silveira",
+                email: "carlos.queijaria@gmail.com",
+                phone: "(16) 99654-7890",
+                city: "Altinópolis - SP",
+                profile: "Empresário / Comerciante",
+                interest: "Queijaria & Pecuária",
+                checkedIn: false,
+                createdAt: "10/09/2026 09:05"
+            }
+        ];
+
+        let currentParticipant = null;
+
+        // UI Toast Notification helper
+        function showNotification(msg, isSuccess = true) {
+            const toast = document.getElementById('toastNotification');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            if (!toast || !toastMsg) return;
+
+            toastMsg.textContent = msg;
+            if (isSuccess) {
+                toastIcon.className = "fa-solid fa-circle-check text-emerald-400 text-lg";
+            } else {
+                toastIcon.className = "fa-solid fa-circle-exclamation text-amber-400 text-lg";
+            }
+
+            toast.classList.remove('translate-y-[-150%]', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-[-150%]', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+
+        // Toggle Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const icon = document.getElementById('menuIcon');
+            if (!menu || !icon) return;
+
+            const isHidden = menu.classList.contains('hidden');
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-xmark');
+            } else {
+                menu.classList.add('hidden');
+                icon.classList.remove('fa-xmark');
+                icon.classList.add('fa-bars');
+            }
+        }
+
+        // Filter Schedule Tabs
+        function filterSchedule(period) {
+            const items = document.querySelectorAll('.schedule-item');
+            const tabAll = document.getElementById('tabAll');
+            const tabMorning = document.getElementById('tabMorning');
+            const tabAfternoon = document.getElementById('tabAfternoon');
+
+            // Reset tab styles
+            [tabAll, tabMorning, tabAfternoon].forEach(tab => {
+                if (tab) {
+                    tab.classList.remove('bg-white', 'text-stone-900', 'shadow-sm');
+                    tab.classList.add('text-stone-600');
+                }
+            });
+
+            if (period === 'all') {
+                if (tabAll) {
+                    tabAll.classList.add('bg-white', 'text-stone-900', 'shadow-sm');
+                    tabAll.classList.remove('text-stone-600');
+                }
+                items.forEach(item => item.classList.remove('hidden'));
+            } else if (period === 'morning') {
+                if (tabMorning) {
+                    tabMorning.classList.add('bg-white', 'text-stone-900', 'shadow-sm');
+                    tabMorning.classList.remove('text-stone-600');
+                }
+                items.forEach(item => {
+                    if (item.classList.contains('morning')) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            } else if (period === 'afternoon') {
+                if (tabAfternoon) {
+                    tabAfternoon.classList.add('bg-white', 'text-stone-900', 'shadow-sm');
+                    tabAfternoon.classList.remove('text-stone-600');
+                }
+                items.forEach(item => {
+                    if (item.classList.contains('afternoon')) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+            }
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const name = document.getElementById('regName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const phone = document.getElementById('regPhone').value.trim();
+            const city = document.getElementById('regCity').value.trim();
+            const profile = document.getElementById('regProfile').value;
+            const interest = document.getElementById('regInterest').value;
+            const consent = document.getElementById('lgpdConsent').checked;
+
+            if (!name || !email || !phone || !consent) {
+                showNotification("Por favor, preencha todos os campos obrigatórios e aceite o termo da LGPD.", false);
+                return;
+            }
+
+            // Generate unique registration code
+            const randomCode = "FER-" + Math.floor(100000 + Math.random() * 900000);
+            const now = new Date();
+            const timeStr = now.toLocaleDateString('pt-BR') + ' ' + now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+            const newRegistration = {
+                code: randomCode,
+                name: name,
+                email: email,
+                phone: phone,
+                city: city,
+                profile: profile,
+                interest: interest,
+                checkedIn: false,
+                createdAt: timeStr
+            };
+
+            // Save to in-memory list
+            registrationsList.unshift(newRegistration);
+            currentParticipant = newRegistration;
+
+            // Render Participant's Credential
+            renderParticipantCredential(newRegistration);
+
+            // Trigger celebration confetti
+            try {
+                confetti({
+                    particleCount: 80,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+            } catch(e) {}
+
+            showNotification("Inscrição efetuada com sucesso! Sua credencial foi gerada.");
+
+            // Update dashboard metrics if organizer is watching
+            if (isOrganizerAuthenticated) {
+                updateDashboardMetrics();
+                renderAttendanceTable(registrationsList);
+            }
+        }
+
+        function renderParticipantCredential(participant) {
+            const display = document.getElementById('credentialDisplay');
+            const nameEl = document.getElementById('cardParticipantName');
+            const detailsEl = document.getElementById('cardParticipantDetails');
+            const codeEl = document.getElementById('cardTicketCode');
+            const qrContainer = document.getElementById('participantQRCode');
+
+            if (!display || !qrContainer) return;
+
+            nameEl.textContent = participant.name;
+            detailsEl.textContent = `${participant.profile} • ${participant.city} • Interesse: ${participant.interest}`;
+            codeEl.textContent = `CÓDIGO: ${participant.code}`;
+
+            qrContainer.innerHTML = "";
+            new QRCode(qrContainer, {
+                text: JSON.stringify({
+                    evento: "Feira de Empreendedorismo Rural Cajuru",
+                    escola: "EE Dr. Messias da Fonseca",
+                    codigo: participant.code,
+                    nome: participant.name,
+                    cidade: participant.city
+                }),
+                width: 130,
+                height: 130,
+                colorDark: "#14532d",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.M
+            });
+
+            display.classList.remove('hidden');
+            display.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        window.openOrganizerLoginModal = function() {
+            if (isOrganizerAuthenticated) {
+                const target = document.getElementById('presenca-painel');
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            const modal = document.getElementById('organizerAuthModal');
+            const passInput = document.getElementById('organizerPassInput');
+            const errDiv = document.getElementById('authErrorMsg');
+            if (errDiv) errDiv.classList.add('hidden');
+            if (passInput) passInput.value = '';
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            if (passInput) setTimeout(() => passInput.focus(), 150);
+        };
+
+        window.closeOrganizerLoginModal = function() {
+            const modal = document.getElementById('organizerAuthModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        window.handleOrganizerAuthSubmit = function(event) {
+            if (event) event.preventDefault();
+            const passInput = document.getElementById('organizerPassInput');
+            const inputVal = passInput ? passInput.value.trim() : '';
+            const errDiv = document.getElementById('authErrorMsg');
+
+            if (inputVal === ORGANIZER_SECRET_KEY) {
+                isOrganizerAuthenticated = true;
+                window.closeOrganizerLoginModal();
+                applyOrganizerAuthUI();
+                showNotification("Acesso da comissão organizadora desbloqueado!");
+                const target = document.getElementById('presenca-painel');
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                if (errDiv) errDiv.classList.remove('hidden');
+            }
+        };
+
+        window.lockOrganizerArea = function() {
+            isOrganizerAuthenticated = false;
+            applyOrganizerAuthUI();
+            showNotification("Sessão da secretaria encerrada. Dados restritos por LGPD.");
+        };
+
+        function applyOrganizerAuthUI() {
+            const lockedView = document.getElementById('organizerLockedView');
+            const unlockedView = document.getElementById('organizerUnlockedView');
+
+            if (isOrganizerAuthenticated) {
+                if (lockedView) lockedView.classList.add('hidden');
+                if (unlockedView) unlockedView.classList.remove('hidden');
+                renderAttendanceTable(registrationsList);
+                updateDashboardMetrics();
+            } else {
+                if (lockedView) lockedView.classList.remove('hidden');
+                if (unlockedView) unlockedView.classList.add('hidden');
+            }
+        }
+
+        function renderAttendanceTable(list) {
+            const tbody = document.getElementById('attendanceTableBody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-8 text-center text-stone-500 italic">
+                            Nenhuma inscrição cadastrada até o momento.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            list.forEach(p => {
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-stone-850/60 transition-colors";
+                tr.innerHTML = `
+                    <td class="py-3 px-4 font-mono font-bold text-amber-400">${p.code}</td>
+                    <td class="py-3 px-4">
+                        <strong class="text-white block">${p.name}</strong>
+                        <span class="text-[10px] text-stone-400">${p.email}</span>
+                    </td>
+                    <td class="py-3 px-4 text-stone-300">${p.profile}</td>
+                    <td class="py-3 px-4 text-stone-300">${p.city}</td>
+                    <td class="py-3 px-4 text-center">
+                        ${p.checkedIn 
+                            ? '<span class="bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold px-2.5 py-1 rounded-full text-[10px] inline-flex items-center gap-1"><i class="fa-solid fa-check"></i> Presente</span>'
+                            : '<span class="bg-stone-800 border border-stone-700 text-stone-400 font-semibold px-2.5 py-1 rounded-full text-[10px]">Pendente</span>'
+                        }
+                    </td>
+                    <td class="py-3 px-4 text-right space-x-2">
+                        <button onclick="toggleCheckIn('${p.code}')" class="px-2.5 py-1 rounded-lg ${p.checkedIn ? 'bg-amber-500/20 text-amber-300 hover:bg-amber-500/30' : 'bg-emerald-600 text-white hover:bg-emerald-500'} font-bold text-[11px] transition-all">
+                            ${p.checkedIn ? '<i class="fa-solid fa-rotate-left mr-1"></i> Desfazer' : '<i class="fa-solid fa-check mr-1"></i> Check-in'}
+                        </button>
+                        <button onclick="openCertificateForCode('${p.code}')" class="px-2.5 py-1 rounded-lg bg-stone-800 text-stone-300 hover:text-white hover:bg-stone-700 font-bold text-[11px] transition-all" title="Ver / Imprimir Certificado">
+                            <i class="fa-solid fa-award"></i>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function updateDashboardMetrics() {
+            const total = registrationsList.length;
+            const presentes = registrationsList.filter(p => p.checkedIn).length;
+
+            const metricTotal = document.getElementById('metricTotal');
+            const metricPresentes = document.getElementById('metricPresentes');
+            const metricCertificados = document.getElementById('metricCertificados');
+
+            if (metricTotal) metricTotal.textContent = total;
+            if (metricPresentes) metricPresentes.textContent = presentes;
+            if (metricCertificados) metricCertificados.textContent = presentes;
+        }
+
+        window.toggleCheckIn = function(code) {
+            const item = registrationsList.find(p => p.code === code);
+            if (item) {
+                item.checkedIn = !item.checkedIn;
+                showNotification(item.checkedIn ? `Presença de ${item.name} confirmada!` : `Check-in de ${item.name} desfeito.`);
+                filterAttendanceTable();
+                updateDashboardMetrics();
+            }
+        };
+
+        window.filterAttendanceTable = function() {
+            const searchVal = (document.getElementById('tableSearch')?.value || '').toLowerCase().trim();
+            const statusVal = document.getElementById('statusFilter')?.value || 'all';
+
+            let filtered = registrationsList.filter(p => {
+                const matchSearch = p.name.toLowerCase().includes(searchVal) ||
+                                    p.code.toLowerCase().includes(searchVal) ||
+                                    p.city.toLowerCase().includes(searchVal) ||
+                                    p.email.toLowerCase().includes(searchVal);
+
+                let matchStatus = true;
+                if (statusVal === 'presente') matchStatus = p.checkedIn === true;
+                if (statusVal === 'pendente') matchStatus = p.checkedIn === false;
+
+                return matchSearch && matchStatus;
+            });
+
+            renderAttendanceTable(filtered);
+        };
+
+        window.exportToCSV = function() {
+            if (registrationsList.length === 0) {
+                showNotification("Nenhum dado disponível para exportação.", false);
+                return;
+            }
+
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Codigo,Nome,Email,Telefone,Cidade,Perfil,Interesse,PresencaConfirmada,DataHora\n";
+
+            registrationsList.forEach(p => {
+                const row = [
+                    `"${p.code}"`,
+                    `"${p.name}"`,
+                    `"${p.email}"`,
+                    `"${p.phone}"`,
+                    `"${p.city}"`,
+                    `"${p.profile}"`,
+                    `"${p.interest}"`,
+                    `"${p.checkedIn ? 'SIM' : 'NAO'}"`,
+                    `"${p.createdAt}"`
+                ].join(",");
+                csvContent += row + "\n";
+            });
+
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", `presenca_feira_cajuru_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showNotification("Planilha (.CSV) exportada com sucesso!");
+        };
+
+        window.printAttendanceSheet = function() {
+            window.print();
+        };
+
+        window.previewMyCertificate = function() {
+            if (!currentParticipant) {
+                showNotification("Nenhuma inscrição encontrada na sessão atual.", false);
+                return;
+            }
+            openCertificateForData(currentParticipant.name, currentParticipant.code);
+        };
+
+        window.openCertificateForCode = function(code) {
+            const item = registrationsList.find(p => p.code === code);
+            if (item) {
+                openCertificateForData(item.name, item.code);
+            }
+        };
+
+        function openCertificateForData(name, code) {
+            const modal = document.getElementById('certificateModal');
+            const nameEl = document.getElementById('certModalName');
+            const codeEl = document.getElementById('certModalCode');
+
+            if (nameEl) nameEl.textContent = name;
+            if (codeEl) codeEl.textContent = `Autenticidade: ${code}`;
+
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        }
+
+        window.closeCertificateModal = function() {
+            const modal = document.getElementById('certificateModal');
+            if (modal) {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            }
+        };
+
+        window.printOfficialCertificate = function() {
+            window.print();
+        };
+
+        window.copyAddressToClipboard = function() {
+            const text = "Escola Estadual Dr. Messias da Fonseca, Rua Cel. José Teodoro, Centro, Cajuru - SP, CEP 14240-000";
+            const tempInput = document.createElement("input");
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+            showNotification("Endereço da escola copiado para a área de transferência!");
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Generate Hero QR Code pointing to this event
+            const heroQRBox = document.getElementById('heroQRCode');
+            if (heroQRBox) {
+                new QRCode(heroQRBox, {
+                    text: window.location.href.split('#')[0] + "#inscricao",
+                    width: 175,
+                    height: 175,
+                    colorDark: "#052e16",
+                    colorLight: "#ffffff",
+                    correctLevel: QRCode.CorrectLevel.M
+                });
+            }
+
+            // Initial dashboard setup
+            updateDashboardMetrics();
+        });
+    </script>
+</body>
+</html>
