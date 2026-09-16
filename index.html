@@ -695,6 +695,7 @@
                     </div>
 
                     <div class="flex flex-wrap items-center gap-3">
+                        <span id="googleSheetsBadge" class="hidden text-[11px] font-bold px-3 py-2 rounded-xl border items-center gap-1.5"></span>
                         <button onclick="exportToCSV()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-4 py-2.5 rounded-xl flex items-center gap-2 shadow transition-all">
                             <i class="fa-solid fa-file-csv"></i>
                             <span>Exportar Lista (.CSV)</span>
@@ -1044,12 +1045,21 @@
     </div>
 
     <script>
+        // =============================================================================
+        // CONFIGURAÇÃO DA PLANILHA NO GOOGLE DRIVE (GOOGLE APPS SCRIPT)
+        // =============================================================================
+        // Cole abaixo a URL gerada ao implantar seu Google Apps Script como Web App.
+        // Exemplo: const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycb.../exec";
+        // Deixe vazio ("") para operar em modo local / offline.
+        const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzM6P4qTuwTjzS7fLCTPxY1qQChEkHqexW1jjmGlOtStzlTKcAOUA7CfXxwPWUqN93z/exec";
+
         // Default Key and Storage Identifiers
         const ORGANIZER_SECRET_KEY = "messias2026";
+        const LOCAL_STORAGE_KEY = "feira_messias_registrations_v1";
         let isOrganizerAuthenticated = false;
 
-        // In-memory data store with realistic starter records
-        let registrationsList = [
+        // Base starter records for initial demo
+        const defaultStarterRecords = [
             {
                 code: "FER-849102",
                 name: "Benedito Aparecido de Souza",
@@ -1085,6 +1095,57 @@
             }
         ];
 
+        // Persistence Helpers (LocalStorage)
+        function loadRegistrationsFromStorage() {
+            try {
+                const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        return parsed;
+                    }
+                }
+            } catch (e) {
+                console.warn("Aviso ao carregar localStorage:", e);
+            }
+            return [...defaultStarterRecords];
+        }
+
+        function saveRegistrationsToStorage() {
+            try {
+                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(registrationsList));
+            } catch (e) {
+                console.warn("Aviso ao salvar no localStorage:", e);
+            }
+        }
+
+        // Send participant data directly to Google Sheets in Google Drive
+        async function syncRegistrationWithGoogleSheets(participant) {
+            if (!GOOGLE_SHEET_WEBAPP_URL || GOOGLE_SHEET_WEBAPP_URL.trim() === "") {
+                console.info("Google Sheets: URL não configurada. Inscrição persistida localmente.");
+                return;
+            }
+
+            try {
+                // Envio assíncrono compatível com GitHub Pages e CORS do Google Apps Script
+                await fetch(GOOGLE_SHEET_WEBAPP_URL, {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8"
+                    },
+                    body: JSON.stringify(participant)
+                });
+                console.log("Inscrição gravada com sucesso no Google Sheets!");
+                showNotification("Inscrição sincronizada com a planilha do Google Drive!");
+            } catch (err) {
+                console.warn("Falha de rede ao conectar com Google Sheets:", err);
+                showNotification("Salvo no navegador. Não foi possível conectar ao Google Sheets.", false);
+            }
+        }
+
+        // Active participants list
+        let registrationsList = loadRegistrationsFromStorage();
         let currentParticipant = null;
 
         // UI Toast Notification helper
@@ -1210,8 +1271,9 @@
                 createdAt: timeStr
             };
 
-            // Save to in-memory list
+            // Save to in-memory list & LocalStorage
             registrationsList.unshift(newRegistration);
+            saveRegistrationsToStorage();
             currentParticipant = newRegistration;
 
             // Render Participant's Credential
@@ -1227,6 +1289,9 @@
             } catch(e) {}
 
             showNotification("Inscrição efetuada com sucesso! Sua credencial foi gerada.");
+
+            // Sincroniza diretamente com o Google Sheets no Google Drive
+            syncRegistrationWithGoogleSheets(newRegistration);
 
             // Update dashboard metrics if organizer is watching
             if (isOrganizerAuthenticated) {
@@ -1321,10 +1386,24 @@
         function applyOrganizerAuthUI() {
             const lockedView = document.getElementById('organizerLockedView');
             const unlockedView = document.getElementById('organizerUnlockedView');
+            const badge = document.getElementById('googleSheetsBadge');
 
             if (isOrganizerAuthenticated) {
                 if (lockedView) lockedView.classList.add('hidden');
                 if (unlockedView) unlockedView.classList.remove('hidden');
+
+                // Atualiza o selo indicativo da conexão com o Google Drive
+                if (badge) {
+                    badge.classList.remove('hidden');
+                    if (GOOGLE_SHEET_WEBAPP_URL && GOOGLE_SHEET_WEBAPP_URL.trim() !== "") {
+                        badge.className = "bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[11px] font-bold px-3 py-2 rounded-xl inline-flex items-center gap-1.5";
+                        badge.innerHTML = '<i class="fa-solid fa-cloud-arrow-up text-xs"></i><span>Planilha Google Conectada</span>';
+                    } else {
+                        badge.className = "bg-amber-500/10 border border-amber-500/30 text-amber-400 text-[11px] font-bold px-3 py-2 rounded-xl inline-flex items-center gap-1.5";
+                        badge.innerHTML = '<i class="fa-solid fa-hard-drive text-xs"></i><span>Modo Local (Offline)</span>';
+                    }
+                }
+
                 renderAttendanceTable(registrationsList);
                 updateDashboardMetrics();
             } else {
@@ -1397,6 +1476,7 @@
             const item = registrationsList.find(p => p.code === code);
             if (item) {
                 item.checkedIn = !item.checkedIn;
+                saveRegistrationsToStorage();
                 showNotification(item.checkedIn ? `Presença de ${item.name} confirmada!` : `Check-in de ${item.name} desfeito.`);
                 filterAttendanceTable();
                 updateDashboardMetrics();
